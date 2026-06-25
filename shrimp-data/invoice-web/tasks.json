@@ -1,0 +1,166 @@
+{
+  "tasks": [
+    {
+      "id": "bab95309-aaab-4470-ad20-b19fcd6e3f64",
+      "name": "Task 001: tasks 디렉토리 및 작업 명세 파일 생성",
+      "description": "프로젝트 루트에 tasks/ 디렉토리를 생성하고, Phase 1의 두 Task에 대한 명세 파일(001-routing-skeleton.md, 002-type-definitions.md)을 작성한다. 각 명세 파일에는 고수준 명세, 관련 파일 목록, 수락 기준, 구현 단계를 포함한다.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-06-25T09:30:07.487Z",
+      "updatedAt": "2026-06-25T09:34:36.393Z",
+      "relatedFiles": [
+        {
+          "path": "tasks/001-routing-skeleton.md",
+          "type": "CREATE",
+          "description": "Task 001 작업 명세 파일"
+        },
+        {
+          "path": "tasks/002-type-definitions.md",
+          "type": "CREATE",
+          "description": "Task 002 작업 명세 파일"
+        },
+        {
+          "path": "docs/ROADMAP.md",
+          "type": "REFERENCE",
+          "description": "Phase 1 작업 요구사항 참조"
+        },
+        {
+          "path": "shrimp-rules.md",
+          "type": "REFERENCE",
+          "description": "개발 규칙 참조"
+        }
+      ],
+      "implementationGuide": "1. tasks/ 디렉토리 생성\n2. tasks/001-routing-skeleton.md 작성:\n   - 목표: /invoice/[slug] 라우트 골격 및 미니멀 레이아웃\n   - 관련 파일: src/app/invoice/[slug]/layout.tsx, page.tsx, not-found.tsx\n   - 수락 기준: 라우트 접근 가능, 미니멀 레이아웃 적용\n   - 구현 단계 목록\n3. tasks/002-type-definitions.md 작성:\n   - 목표: Invoice, NotionBlock 타입 및 환경변수 타입 정의\n   - 관련 파일: src/types/*.ts\n   - 수락 기준: TypeScript 컴파일 오류 없음\n   - 구현 단계 목록",
+      "verificationCriteria": "tasks/ 디렉토리에 001-routing-skeleton.md, 002-type-definitions.md 파일이 존재하고, 각 파일에 목표/관련 파일/수락 기준/구현 단계가 포함되어 있다.",
+      "analysisResult": "Phase 1 애플리케이션 골격 구축: Next.js 15 App Router 기반으로 /invoice/[slug] 동적 라우트와 미니멀 레이아웃, not-found.tsx 오류 페이지, TypeScript 타입 정의를 완성한다. 별도 DB 없이 노션만 사용하는 단순 구조이며, shrimp-rules.md §3에 따라 invoice 영역에 MainLayout 사용 금지. 전역 Provider(ThemeProvider, TooltipProvider, Toaster)는 루트 layout.tsx에서 이미 주입되므로 그대로 상속한다.",
+      "summary": "tasks/ 디렉토리 생성 완료. 001-routing-skeleton.md에는 목표/관련 파일/수락 기준/구현 단계(3단계)가 포함되고, 002-type-definitions.md에는 타입 상세 명세와 구현 단계(4단계)가 포함되었다. 두 파일 모두 ROADMAP.md 요구사항과 shrimp-rules.md 규칙을 반영하였다.",
+      "completedAt": "2026-06-25T09:34:36.391Z"
+    },
+    {
+      "id": "c618a51b-32b4-4f66-ac5e-c1fcd5e02d19",
+      "name": "Task 002: TypeScript 타입 정의",
+      "description": "src/types/ 디렉토리를 생성하고 Invoice 인터페이스, 노션 블록 타입, 환경변수 타입을 정의한다. 노션 DB 행 구조(slug, pageId, title)를 반영한 Invoice 타입, 주요 NotionBlockType union, 환경변수 ProcessEnv augmentation을 포함한다.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-06-25T09:30:07.487Z",
+      "updatedAt": "2026-06-25T09:30:07.487Z",
+      "relatedFiles": [
+        {
+          "path": "src/types/invoice.ts",
+          "type": "CREATE",
+          "description": "Invoice 인터페이스 정의"
+        },
+        {
+          "path": "src/types/notion.ts",
+          "type": "CREATE",
+          "description": "노션 블록 타입 정의"
+        },
+        {
+          "path": "src/types/env.d.ts",
+          "type": "CREATE",
+          "description": "환경변수 타입 선언"
+        },
+        {
+          "path": "src/types/index.ts",
+          "type": "CREATE",
+          "description": "타입 re-export 인덱스"
+        },
+        {
+          "path": "tsconfig.json",
+          "type": "REFERENCE",
+          "description": "strict 모드 및 paths 별칭 확인"
+        },
+        {
+          "path": "shrimp-rules.md",
+          "type": "REFERENCE",
+          "description": "타입 정의 규칙 확인"
+        }
+      ],
+      "implementationGuide": "1. src/types/invoice.ts 생성:\n   - interface Invoice { id: string; title: string; slug: string; pageId: string; }\n2. src/types/notion.ts 생성:\n   - type NotionBlockType = 'paragraph' | 'heading_1' | 'heading_2' | 'heading_3' | 'bulleted_list_item' | 'numbered_list_item' | 'table' | 'image' | 'divider' | 'quote' | 'code'\n   - interface NotionRichText { plain_text: string; href: string | null; annotations: { bold: boolean; italic: boolean; strikethrough: boolean; underline: boolean; code: boolean; } }\n   - interface NotionBlock { id: string; type: NotionBlockType; has_children: boolean; [key: string]: unknown; }\n3. src/types/env.d.ts 생성:\n   - namespace NodeJS { interface ProcessEnv { NOTION_API_KEY: string | undefined; NOTION_DATABASE_ID: string | undefined; } }\n4. src/types/index.ts 생성:\n   - export * from './invoice'; export * from './notion';",
+      "verificationCriteria": "src/types/ 디렉토리에 invoice.ts, notion.ts, env.d.ts, index.ts 파일이 생성되고, npm run build 또는 tsc --noEmit에서 타입 오류가 없다. Invoice 인터페이스에 id, title, slug, pageId 필드가 존재한다.",
+      "analysisResult": "Phase 1 애플리케이션 골격 구축: Next.js 15 App Router 기반으로 /invoice/[slug] 동적 라우트와 미니멀 레이아웃, not-found.tsx 오류 페이지, TypeScript 타입 정의를 완성한다. 별도 DB 없이 노션만 사용하는 단순 구조이며, shrimp-rules.md §3에 따라 invoice 영역에 MainLayout 사용 금지. 전역 Provider(ThemeProvider, TooltipProvider, Toaster)는 루트 layout.tsx에서 이미 주입되므로 그대로 상속한다."
+    },
+    {
+      "id": "4e9cacc2-b4a3-47f3-97ff-5e58d4b1c0c8",
+      "name": "Task 003: /invoice/[slug] 라우트 골격 및 미니멀 레이아웃 구현",
+      "description": "src/app/invoice/[slug]/ 디렉토리에 미니멀 레이아웃(layout.tsx), 빈 페이지 골격(page.tsx), 오류 안내 페이지(not-found.tsx)를 생성한다. shrimp-rules §3에 따라 MainLayout 사용 금지, 독립 미니멀 레이아웃 직접 구현.",
+      "notes": "Next.js 15에서 params는 Promise 타입 — `const { slug } = await params;` 형태로 사용. page.tsx에서 notFound() import는 'next/navigation'에서.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "c618a51b-32b4-4f66-ac5e-c1fcd5e02d19"
+        }
+      ],
+      "createdAt": "2026-06-25T09:30:07.487Z",
+      "updatedAt": "2026-06-25T09:30:07.487Z",
+      "relatedFiles": [
+        {
+          "path": "src/app/invoice/[slug]/layout.tsx",
+          "type": "CREATE",
+          "description": "미니멀 레이아웃"
+        },
+        {
+          "path": "src/app/invoice/[slug]/page.tsx",
+          "type": "CREATE",
+          "description": "견적서 공개 조회 페이지 골격"
+        },
+        {
+          "path": "src/app/invoice/[slug]/not-found.tsx",
+          "type": "CREATE",
+          "description": "오류 안내 페이지"
+        },
+        {
+          "path": "src/app/layout.tsx",
+          "type": "REFERENCE",
+          "description": "루트 레이아웃 패턴 참조 (Provider 상속 확인)"
+        },
+        {
+          "path": "src/app/page.tsx",
+          "type": "REFERENCE",
+          "description": "독립 레이아웃 패턴 참조"
+        },
+        {
+          "path": "src/components/ui/button.tsx",
+          "type": "DEPENDENCY",
+          "description": "not-found 페이지 버튼 컴포넌트"
+        },
+        {
+          "path": "src/lib/utils.ts",
+          "type": "DEPENDENCY",
+          "description": "cn() 유틸리티"
+        },
+        {
+          "path": "src/types/index.ts",
+          "type": "DEPENDENCY",
+          "description": "Invoice 타입 참조"
+        }
+      ],
+      "implementationGuide": "1. src/app/invoice/[slug]/layout.tsx 생성:\n   - 서버 컴포넌트 (use client 불필요)\n   - 미니멀 래퍼: <div className=\"min-h-screen bg-background\"><main className=\"mx-auto max-w-4xl px-4 py-8\">{children}</main></div>\n   - Metadata export: title '견적서 조회'\n2. src/app/invoice/[slug]/page.tsx 생성:\n   - 서버 컴포넌트\n   - params: Promise<{ slug: string }> (Next.js 15 async params)\n   - 현재는 slug 표시 빈 껍데기\n   - generateMetadata 함수로 동적 메타데이터\n3. src/app/invoice/[slug]/not-found.tsx 생성:\n   - 오류 안내 UI: '이 견적서는 존재하지 않거나 삭제되었습니다' 메시지\n   - FileX 아이콘(lucide-react), 홈으로 돌아가기 링크",
+      "verificationCriteria": "1. localhost:3000/invoice/test-slug 접속 시 빈 페이지 렌더링 (Header/Sidebar 없음)\n2. not-found 페이지에 오류 안내 메시지 표시\n3. npm run build 오류 없음\n4. TypeScript 타입 오류 없음",
+      "analysisResult": "Phase 1 애플리케이션 골격 구축: Next.js 15 App Router 기반으로 /invoice/[slug] 동적 라우트와 미니멀 레이아웃, not-found.tsx 오류 페이지, TypeScript 타입 정의를 완성한다. 별도 DB 없이 노션만 사용하는 단순 구조이며, shrimp-rules.md §3에 따라 invoice 영역에 MainLayout 사용 금지. 전역 Provider(ThemeProvider, TooltipProvider, Toaster)는 루트 layout.tsx에서 이미 주입되므로 그대로 상속한다."
+    },
+    {
+      "id": "6d13e8de-e2d1-4950-8d51-7346d2ed50b2",
+      "name": "Task 004: ROADMAP.md 업데이트",
+      "description": "Phase 1 Task 001, 002 구현 완료 후 docs/ROADMAP.md에서 해당 항목을 ✅로 표시한다.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "4e9cacc2-b4a3-47f3-97ff-5e58d4b1c0c8"
+        }
+      ],
+      "createdAt": "2026-06-25T09:30:07.487Z",
+      "updatedAt": "2026-06-25T09:30:07.487Z",
+      "relatedFiles": [
+        {
+          "path": "docs/ROADMAP.md",
+          "type": "TO_MODIFY",
+          "description": "Phase 1 Task 완료 상태 업데이트"
+        }
+      ],
+      "implementationGuide": "docs/ROADMAP.md에서:\n- Task 001: 프로젝트 라우트 구조 및 빈 페이지 골격 생성 → ✅ 표시\n- Task 002: 타입 정의 → ✅ 표시\nPhase 1 완료 기준 충족 여부 확인 후 업데이트.",
+      "verificationCriteria": "docs/ROADMAP.md에서 Task 001, Task 002가 ✅로 표시되어 있다.",
+      "analysisResult": "Phase 1 애플리케이션 골격 구축: Next.js 15 App Router 기반으로 /invoice/[slug] 동적 라우트와 미니멀 레이아웃, not-found.tsx 오류 페이지, TypeScript 타입 정의를 완성한다. 별도 DB 없이 노션만 사용하는 단순 구조이며, shrimp-rules.md §3에 따라 invoice 영역에 MainLayout 사용 금지. 전역 Provider(ThemeProvider, TooltipProvider, Toaster)는 루트 layout.tsx에서 이미 주입되므로 그대로 상속한다."
+    }
+  ]
+}
