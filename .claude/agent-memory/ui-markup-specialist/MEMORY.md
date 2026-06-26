@@ -1,0 +1,1 @@
+- [견적서 UI 레이아웃 패턴](project-invoice-ui-patterns.md) — 단일 카드 구조, h1 전역 스타일 회피, 스켈레톤 1:1 대응 원칙

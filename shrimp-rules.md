@@ -4,7 +4,7 @@
 
 - **목적**: 노션 데이터베이스를 유일한 CMS로 사용하여 견적서를 웹 링크로 공유하고 PDF 다운로드 제공
 - **핵심 제약**: 별도 DB(Supabase 등) 절대 도입 금지. 데이터 소스는 **Notion API만** 사용
-- **환경변수**: `NOTION_API_KEY`, `NOTION_DATABASE_ID` 두 개만 사용
+- **환경변수**: `NOTION_API_KEY`, `NOTION_INVOICE_DB_ID`, `NOTION_ITEMS_DB_ID` 세 개 사용
 
 ---
 
@@ -88,8 +88,10 @@ docs/
 ## 6. TypeScript 규칙
 
 - `src/types/` 디렉토리에 도메인 타입 정의
-- 노션 DB 행 타입: `Invoice` 인터페이스 (`slug`, `page_id`, `title` 필드)
-- 환경변수는 `process.env.NOTION_API_KEY`, `process.env.NOTION_DATABASE_ID`로 접근
+- 견적서 타입: `Invoice` (`slug`, `client`, `date`, `total`, `items: InvoiceItem[]`)
+- 항목 타입: `InvoiceItem` (`name`, `quantity`, `unit_price`, `amount`)
+- 노션 응답 타입: `NotionInvoiceRow`, `NotionItemRow` (`src/types/notion.ts`)
+- 환경변수는 `process.env.NOTION_API_KEY`, `process.env.NOTION_INVOICE_DB_ID`, `process.env.NOTION_ITEMS_DB_ID`로 접근
 - 경로 별칭 `@/` = `src/` (tsconfig paths 설정됨)
 - `strict: true` 활성화 — `any` 타입 사용 지양
 
@@ -97,9 +99,12 @@ docs/
 
 ## 7. Notion API 연동 규칙
 
-- `src/lib/notion.ts`에 `@notionhq/client` 기반 클라이언트 작성
-- slug → page_id 조회 함수 위치: `src/lib/notion.ts`
-- 노션 블록 렌더링 라이브러리: `react-notion-x` 또는 `notion-to-md` (Phase 3에서 결정)
+- `src/lib/notion.ts`에 `@notionhq/client` 기반 서버 전용 클라이언트 작성
+- **조회 흐름**: `slug`로 견적서 DB 조회 → items Relation `page_id` 배열 확보 → 각 항목 페이지 개별 조회
+- 함수 목록:
+  - `getInvoiceBySlug(slug)`: 견적서 DB에서 slug 필터 조회 → `Invoice` 반환 (F001)
+  - `getInvoiceItems(pageIds)`: page_id 배열 → 각 항목 페이지 조회 → `InvoiceItem[]` 반환 (F002)
+- 두 개의 DB ID: `NOTION_INVOICE_DB_ID`(견적서 DB), `NOTION_ITEMS_DB_ID`(항목 DB)
 - 노션 API 레이트 리밋 고려 — Next.js `revalidate` 캐싱 전략 적용 권장
 
 ---
