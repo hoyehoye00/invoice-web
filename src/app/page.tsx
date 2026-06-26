@@ -17,11 +17,10 @@ export default function LandingPage() {
             <span>노션 견적서</span>
           </Link>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/login">로그인</Link>
-            </Button>
             <Button size="sm" asChild>
-              <Link href="/signup">무료로 시작하기</Link>
+              <a href="#" target="_blank" rel="noopener noreferrer">
+                무료로 시작하기
+              </a>
             </Button>
           </div>
         </div>
@@ -49,13 +48,10 @@ export default function LandingPage() {
 
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Button size="lg" className="gap-2 w-full sm:w-auto" asChild>
-              <Link href="/signup">
+              <a href="#" target="_blank" rel="noopener noreferrer">
                 무료로 시작하기
                 <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto" asChild>
-              <Link href="/login">로그인</Link>
+              </a>
             </Button>
           </div>
         </div>

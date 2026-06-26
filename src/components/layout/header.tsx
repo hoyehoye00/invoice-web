@@ -3,15 +3,12 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { Moon, Sun, Monitor, Menu, FileText, LogOut, User, Settings } from "lucide-react";
+import { Moon, Sun, Monitor, Menu, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -62,42 +59,6 @@ function ThemeToggle() {
   );
 }
 
-function UserMenu() {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="/placeholder-avatar.jpg" alt="사용자" />
-            <AvatarFallback>U</AvatarFallback>
-          </Avatar>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium">사용자 이름</p>
-            <p className="text-xs text-muted-foreground">user@example.com</p>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="gap-2">
-          <User className="h-4 w-4" />
-          프로필
-        </DropdownMenuItem>
-        <DropdownMenuItem className="gap-2">
-          <Settings className="h-4 w-4" />
-          설정
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="gap-2 text-destructive focus:text-destructive">
-          <LogOut className="h-4 w-4" />
-          로그아웃
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
 
 export function Header() {
   return (
@@ -155,7 +116,6 @@ export function Header() {
         {/* 우측 액션 영역 */}
         <div className="ml-auto flex items-center gap-1">
           <ThemeToggle />
-          <UserMenu />
         </div>
       </div>
     </header>
