@@ -1,6 +1,6 @@
 import { Client } from "@notionhq/client";
 import { unstable_cache } from "next/cache";
-import type { Invoice, InvoiceItem } from "@/types/invoice";
+import type { Invoice, InvoiceItem, InvoiceSummary } from "@/types/invoice";
 import type { NotionInvoiceRow, NotionItemRow } from "@/types/notion";
 
 // 서버 전용 — 클라이언트 컴포넌트에서 import 금지
@@ -68,3 +68,37 @@ export function getFullInvoice(slug: string): Promise<Invoice | null> {
     { revalidate: 60, tags: [`invoice-${slug}`] }
   )(slug);
 }
+
+/** 노션 Invoice DB 전체 조회 → InvoiceSummary 배열 반환 (캐싱 없는 내부 함수) */
+async function fetchAllInvoices(): Promise<InvoiceSummary[]> {
+  const dbId = process.env.NOTION_INVOICE_DB_ID;
+  if (!dbId) throw new Error("NOTION_INVOICE_DB_ID 환경변수가 설정되지 않았습니다");
+
+  const response = await notionClient.databases.query({
+    database_id: dbId,
+    sorts: [{ property: "date", direction: "descending" }],
+  });
+
+  return response.results.map((result) => {
+    const row = result as unknown as NotionInvoiceRow;
+    const props = row.properties;
+    return {
+      id: row.id,
+      name: props.name?.title?.[0]?.plain_text ?? "(제목 없음)",
+      slug: props.slug?.rich_text?.[0]?.plain_text ?? "",
+      client: props.name?.title?.[0]?.plain_text ?? "",
+      date: props.date?.date?.start ?? "",
+      total: props.total?.number ?? 0,
+    };
+  });
+}
+
+/**
+ * 관리자용 견적서 전체 목록 조회
+ * 60초 캐싱 — 목록 갱신 빈도 대응
+ */
+export const getAllInvoices = unstable_cache(
+  fetchAllInvoices,
+  ["all-invoices"],
+  { revalidate: 60, tags: ["all-invoices"] }
+);

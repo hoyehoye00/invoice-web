@@ -1,16 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useTheme } from "next-themes";
-import { Moon, Sun, Monitor, Menu, FileText } from "lucide-react";
+import { Menu, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetContent,
@@ -20,51 +12,12 @@ import {
 } from "@/components/ui/sheet";
 import { MobileSidebar } from "./sidebar";
 import { NAV_ITEMS } from "./nav-items";
-
-function ThemeToggle() {
-  const { setTheme, theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
-
-  const themes = [
-    { value: "light", label: "라이트", icon: Sun },
-    { value: "dark", label: "다크", icon: Moon },
-    { value: "system", label: "시스템", icon: Monitor },
-  ];
-
-  const CurrentIcon =
-    theme === "dark" ? Moon : theme === "light" ? Sun : Monitor;
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="테마 변경">
-          {mounted && <CurrentIcon className="h-4 w-4" />}
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {themes.map(({ value, label, icon: Icon }) => (
-          <DropdownMenuItem
-            key={value}
-            onClick={() => setTheme(value)}
-            className="gap-2"
-          >
-            <Icon className="h-4 w-4" />
-            {label}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-
+import { ThemeToggle } from "./theme-toggle";
 
 export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b">
       <div className="flex h-14 items-center gap-4 px-4 sm:px-6 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-        {/* 모바일 사이드바 트리거 */}
         <Sheet>
           <SheetTrigger asChild>
             <Button
@@ -87,16 +40,11 @@ export function Header() {
           </SheetContent>
         </Sheet>
 
-        {/* 로고 */}
-        <Link
-          href="/"
-          className="flex items-center gap-2 font-semibold"
-        >
+        <Link href="/" className="flex items-center gap-2 font-semibold">
           <FileText className="h-5 w-5 text-primary" />
           <span className="hidden sm:inline">노션 견적서</span>
         </Link>
 
-        {/* 데스크톱 네비게이션 */}
         <nav className="hidden lg:flex items-center gap-1 ml-4">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
@@ -113,7 +61,6 @@ export function Header() {
           })}
         </nav>
 
-        {/* 우측 액션 영역 */}
         <div className="ml-auto flex items-center gap-1">
           <ThemeToggle />
         </div>
