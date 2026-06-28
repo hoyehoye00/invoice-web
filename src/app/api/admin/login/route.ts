@@ -18,7 +18,11 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const response = NextResponse.json({ ok: true });
+  // 쿠키와 리다이렉트를 한 번에 처리 — 클라이언트 push보다 쿠키 적용이 보장됨
+  const response = NextResponse.redirect(
+    new URL("/admin", request.url),
+    { status: 303 }
+  );
   response.cookies.set("admin_session", "authenticated", {
     httpOnly: true,
     path: "/",

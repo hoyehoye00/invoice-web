@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,7 +18,6 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 export default function AdminLoginPage() {
-  const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const {
@@ -34,10 +32,12 @@ export default function AdminLoginPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password: data.password }),
+      redirect: "follow",
     });
 
-    if (response.ok) {
-      router.push("/admin");
+    // API가 303 리다이렉트로 /admin을 반환 — 쿠키가 함께 설정되므로 하드 이동
+    if (response.ok || response.redirected) {
+      window.location.href = response.url || "/admin";
     } else {
       const json = await response.json();
       setErrorMessage(json.error ?? "로그인에 실패했습니다");
